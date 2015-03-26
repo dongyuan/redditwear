@@ -1,25 +1,33 @@
 apply plugin: 'com.android.application'
 
-Properties props = new Properties()
-props.load(new FileInputStream(file(project.property("signing.properties"))))
+if (project.hasProperty("signing.properties") && new File(project.property("signing.properties")).exists()) {
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(project.property("signing.properties"))))
+
+    android {
+        signingConfigs {
+            release {
+                storeFile file(props['keystore'])
+                storePassword props['keystore.password']
+                keyAlias props['keyalias']
+                keyPassword props['keyalias.password']
+            }
+        }
+
+    }
+
+}
+
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.2'
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
-    signingConfigs {
-        release {
-            storeFile file(props['keystore'])
-            storePassword props['keystore.password']
-            keyAlias props['keyalias']
-            keyPassword props['keyalias.password']
-        }
-    }
+
     defaultConfig {
         applicationId "com.emmaguy.todayilearned"
-        signingConfig signingConfigs.release
         minSdkVersion 20
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 28
         versionName "2.2.0"
     }
